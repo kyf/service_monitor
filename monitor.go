@@ -44,7 +44,6 @@ func (this *Monitor) UnRegister(con *Consumer) {
 	this.Lock()
 	defer this.Unlock()
 
-	log.Print("before remove size is ", len(this.consumers))
 	tmp := make([]*Consumer, 0)
 	for _, it := range this.consumers {
 		if con != it {
@@ -53,7 +52,6 @@ func (this *Monitor) UnRegister(con *Consumer) {
 	}
 
 	this.consumers = tmp
-	log.Print("after remove size is ", len(this.consumers))
 }
 
 type MonitorServer struct {
