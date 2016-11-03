@@ -44,14 +44,16 @@ func (this *Monitor) UnRegister(con *Consumer) {
 	this.Lock()
 	defer this.Unlock()
 
-	tmp := make([]*Consumer, 0)
-	for _, it := range this.consumers {
-		if con != it {
-			tmp = append(tmp, it)
+	length := len(this.consumers)
+	for index, it := range this.consumers {
+		if con == it {
+			copy(this.consumers[index:], this.consumers[index+1:])
+			this.consumers[length-1] = nil
+			this.consumers = this.consumers[:length-1]
+			break
 		}
 	}
 
-	this.consumers = tmp
 }
 
 type MonitorServer struct {
