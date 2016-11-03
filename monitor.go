@@ -83,6 +83,8 @@ func (this *MonitorServer) Run(logger *log.Logger) martini.Handler {
 	}
 	return func(w http.ResponseWriter, r *http.Request, context martini.Context) (result bool) {
 		result = true
+		ticker := time.NewTicker(PING_PERIOD)
+		defer ticker.Stop()
 		for rawpath, mon := range this.Routes {
 			if r.URL.Path == rawpath {
 				conn, err := this.WsServer.Upgrade(w, r, nil)
@@ -107,7 +109,7 @@ func (this *MonitorServer) Run(logger *log.Logger) martini.Handler {
 							logger.Errorf("write message err:%v", err)
 							return
 						}
-					case <-time.After(PING_PERIOD):
+					case <-ticker.C:
 						if err := conn.WriteMessage(websocket.PingMessage, []byte{}); err != nil {
 							return
 						}
