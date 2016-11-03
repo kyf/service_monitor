@@ -87,7 +87,7 @@ func (this *MonitorServer) Run(logger *log.Logger) martini.Handler {
 			if r.URL.Path == rawpath {
 				conn, err := this.WsServer.Upgrade(w, r, nil)
 				if err != nil {
-					logger.Printf("WsServer Upgrade err:%v", err)
+					logger.Errorf("WsServer Upgrade err:%v", err)
 					conn.WriteMessage(websocket.CloseMessage, []byte{})
 					return
 				}
@@ -104,7 +104,7 @@ func (this *MonitorServer) Run(logger *log.Logger) martini.Handler {
 					case data := <-ch:
 						err = conn.WriteMessage(websocket.TextMessage, []byte(data))
 						if err != nil {
-							logger.Printf("write message err:%v", err)
+							logger.Errorf("write message err:%v", err)
 							return
 						}
 					case <-time.After(PING_PERIOD):
