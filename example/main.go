@@ -34,15 +34,24 @@ func main() {
 	m.Map(logger)
 
 	m.Get("/data1", func(r *http.Request) {
-		chan_data1 <- r.RequestURI
+		select {
+		case chan_data1 <- r.RequestURI:
+		default:
+		}
 	})
 
 	m.Get("/data2", func(r *http.Request) {
-		chan_data1 <- r.URL.Path
+		select {
+		case chan_data1 <- r.URL.Path:
+		default:
+		}
 	})
 
 	logger.SetAction(func(it string) {
-		chan_data2 <- it
+		select {
+		case chan_data2 <- it:
+		default:
+		}
 	})
 
 	m.Use(monitorServer.Run(logger))
