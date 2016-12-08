@@ -108,7 +108,6 @@ func (this *MonitorServer) Run(logger *log.Logger) martini.Handler {
 					case data := <-ch:
 						err = conn.WriteMessage(websocket.TextMessage, []byte(data))
 						if err != nil {
-							logger.Errorf("write message err:%v", err)
 							return
 						}
 					case <-ticker.C:
